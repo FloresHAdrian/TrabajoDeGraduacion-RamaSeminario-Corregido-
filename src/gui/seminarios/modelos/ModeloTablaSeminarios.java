@@ -5,6 +5,7 @@
  */
 package gui.seminarios.modelos;
 
+import gui.auxiliares.texto.ManejoDeTexto;
 import gui.trabajos.modelos.GestorTrabajos;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -64,7 +65,7 @@ public class ModeloTablaSeminarios extends AbstractTableModel{
         switch(columna){
             case 0: return this.transformarFechaEnCadena(unSeminario.verFechaExposicion());
             case 1: return unSeminario.verNotaAprobacion();
-            case 2: return unSeminario.verObservaciones();
+            case 2: return ManejoDeTexto.leerTextoConSaltoDeLineaTabla(unSeminario.verObservaciones());
             default: return "Mensaje de error";
         }
     }

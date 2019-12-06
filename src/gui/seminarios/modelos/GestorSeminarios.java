@@ -5,6 +5,7 @@
  */
 package gui.seminarios.modelos;
 
+import gui.auxiliares.texto.ManejoDeTexto;
 import gui.interfaces.IGestorSeminarios;
 import gui.trabajos.modelos.GestorTrabajos;
 import gui.trabajos.modelos.Trabajo;
@@ -104,7 +105,7 @@ public class GestorSeminarios implements IGestorSeminarios{
                 bw = new BufferedWriter(new FileWriter(f));
                 if (cantidad > 0) {
                     for (int i = 0; i < listaSeminarios.size(); i++) {
-                        //Le agrego un caracter ";" como separador
+                        //Le agrego un caracter "-" como separador
                         //Y escribo la cadena resultante en el archivo
                         Seminario unSeminario = listaSeminarios.get(i);
                         String patron = "dd/MM/YYYY";
@@ -112,11 +113,10 @@ public class GestorSeminarios implements IGestorSeminarios{
                         String fechaExposicion = fExposicion.format(DateTimeFormatter.ofPattern(patron));
                         cadena += "-" + fechaExposicion + "-";
                         cadena += unSeminario.verNotaAprobacion().toString()+ "-";
-                        System.out.println(unSeminario.verObservaciones());
                         if (unSeminario.verObservaciones()==null)
                             cadena += " ";
                         else
-                            cadena += unSeminario.verObservaciones();
+                            cadena += ManejoDeTexto.guardarTextoConSaltoDeLinea(unSeminario.verObservaciones());
                     }
                 }
                 bw.write(cadena);
@@ -154,31 +154,27 @@ public class GestorSeminarios implements IGestorSeminarios{
                 String cadena;
                 while ((cadena = br.readLine()) != null) {
                     String vector[] = cadena.split("-");////Permite separar subcadenas y guardar en un array de String
+                    int v = vector.length;
                     String titulo = vector[0];//guardamos titulo en el primer vector
                     Trabajo trabajo = gsTrabajos.dameTrabajo(titulo);//usamos el  metodo dame trabajo del gestor para obtener trabajo por el titulo que enviamos
                     int cantidad = Integer.parseInt(vector[1]);
                     if (cantidad > 0) {
                         for (int i = 2; i <= cantidad * 3 + 1;) {
                             String fecha = vector[i];
-                            System.out.println(fecha);
                             
                             String[] vector2 = fecha.split("/");
                             int dia = Integer.parseInt(vector2[0]);
-                            System.out.println(dia);
                             int mes = Integer.parseInt(vector2[1]);
-                            System.out.println(mes);
                             int anio = Integer.parseInt(vector2[2]);
-                            System.out.println(anio);
     
                             LocalDate fechaExposicion =LocalDate.of(anio, mes, dia);
-                            System.out.println(fechaExposicion);
 //                            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");//formato de la fecha
 //                            LocalDate fechaExposicion = LocalDate.parse(fecha, format);//guardamos fecha en el segundo vector
                             // preguntamos si el vector 3 es aprobado con observaciones, sin observaciones o desaprobado
                             i++;
                             String nota = vector[i++];
                             if (nota.equalsIgnoreCase("Aprobado C/O")) {
-                                String observaciones = vector[i++];//guardamos observaciones en el tercer vector
+                                String observaciones = ManejoDeTexto.leerTextoConSaltoDeLinea(vector[i++]);//guardamos observaciones en el tercer vector
                                 trabajo.agregarSeminario(new Seminario(fechaExposicion, NotaAprobacion.APROBADO_CO, observaciones));
                             } else if (nota.equalsIgnoreCase("Aprobado S/O")) {
 //                                String observaciones = vector[i++];
@@ -188,10 +184,9 @@ public class GestorSeminarios implements IGestorSeminarios{
 //                                }
                                 trabajo.agregarSeminario(new Seminario(fechaExposicion, NotaAprobacion.APROBADO_SO, observaciones));
                             } else if (nota.equalsIgnoreCase("Desaprobado")) {
-                                String observaciones = vector[i++];//guardamos observaciones en el tercer vector
+                                String observaciones = ManejoDeTexto.leerTextoConSaltoDeLinea(vector[i++]);//guardamos observaciones en el tercer vector
                                 trabajo.agregarSeminario(new Seminario(fechaExposicion, NotaAprobacion.DESAPROBADO, observaciones));
                             }
-                            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                         }
                     }
                 }

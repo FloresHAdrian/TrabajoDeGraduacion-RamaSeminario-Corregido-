@@ -17,11 +17,15 @@ import gui.trabajos.modelos.GestorTrabajos;
 import gui.trabajos.modelos.Trabajo;
 import java.applet.AudioClip;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -133,6 +137,24 @@ public class ControladorSeminarios implements IControladorSeminarios {
         } else {
             btnModificar.setEnabled(true);
         }
+        
+        
+        //Le doy el ancho a las colummnas.
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_FECHA).setPreferredWidth(25);
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_NOTA).setPreferredWidth(25);
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_OBSERVACIONES).setPreferredWidth(195);
+        
+        
+        //Renderizo el tamaño de las filas segun el texto de las observaciones.
+        for(int row = 0; row < tablaSeminarios.getRowCount(); row++){
+            int rowHeight = tablaSeminarios.getRowHeight();
+            
+            Component comp = tablaSeminarios.prepareRenderer(tablaSeminarios.getCellRenderer(row, 2), row, 2);
+            rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
+            
+            tablaSeminarios.setRowHeight(row, rowHeight);
+        }
+
 
     }
 
@@ -182,14 +204,10 @@ public class ControladorSeminarios implements IControladorSeminarios {
         if (mts.getRowCount() > 0) {
             this.seminarioSeleccionado = 0;
             tablaSeminarios.setRowSelectionInterval(this.seminarioSeleccionado, this.seminarioSeleccionado);
-        } else {//Si no hay filas, no hay seminarios
+        } else {//Si no hay filas, no hay seminarios.
             this.seminarioSeleccionado = -1;
         }
 
-        //Le doy el ancho a las colummnas
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_FECHA).setPreferredWidth(25);
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_NOTA).setPreferredWidth(25);
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_OBSERVACIONES).setPreferredWidth(195);
     }
 
     /**
