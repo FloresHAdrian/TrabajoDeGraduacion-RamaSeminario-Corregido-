@@ -21,7 +21,9 @@ import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.swing.JComboBox;
@@ -53,7 +55,7 @@ public class ControladorAMSeminario implements IControladorAMSeminario {
         this.ventana.verTxtObservaciones().setSize(279, 116);
         this.ventana.verTxtObservaciones().setLineWrap(true);
         this.ventana.verTxtObservaciones().setWrapStyleWord(true);
-
+        
         if (this.seminario != null) {//modificación de seminario
             ventana.setTitle(IControladorSeminarios.MODIFICAR);
             Date date = Date.from(seminario.verFechaExposicion().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -98,7 +100,6 @@ public class ControladorAMSeminario implements IControladorAMSeminario {
         //para que se guarde una fecha convertimos a LocalDate
         if (this.ventana.verFechaExposicion().getCalendar() != null) {
             Date date = this.ventana.verFechaExposicion().getCalendar().getTime();
-
             fecha = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         }
         //instanciamos el gestor trabajos para obtener el titulo del trabajo
@@ -112,12 +113,12 @@ public class ControladorAMSeminario implements IControladorAMSeminario {
             resultado = gestorT.dameTrabajo(titulo).modificarSeminario(seminario, nota, observaciones);
         }
         if (resultado.equals(IGestorSeminarios.EXITO)) {
-            JOptionPane.showMessageDialog(null, resultado, IControladorSeminarios.TITULO, JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, resultado, IControladorSeminarios.TITULO, JOptionPane.OK_CANCEL_OPTION);
             this.ventana.dispose();
         } else {
             gestorT.dameTrabajo(titulo).cancelar();
 
-            JOptionPane.showMessageDialog(null, resultado, IControladorSeminarios.TITULO, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(null, resultado, IControladorSeminarios.TITULO, JOptionPane.WARNING_MESSAGE);
 
         }
     }

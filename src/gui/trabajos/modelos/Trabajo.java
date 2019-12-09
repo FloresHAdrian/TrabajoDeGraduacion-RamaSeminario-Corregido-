@@ -9,6 +9,7 @@ import gui.seminarios.modelos.Seminario;
 import gui.areas.modelos.Area;
 import gui.interfaces.IGestorSeminarios;
 import gui.interfaces.IGestorTrabajos;
+import gui.personas.modelos.Profesor;
 import gui.seminarios.modelos.GestorSeminarios;
 import gui.seminarios.modelos.NotaAprobacion;
 import java.time.LocalDate;
@@ -16,8 +17,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-public class Trabajo {                 
+public class Trabajo implements Comparable<Trabajo>{                 
     private String titulo;
     private int duracion;
     private List<Area> areas = new ArrayList<>();
@@ -66,7 +68,6 @@ public class Trabajo {
         this.ret = ret;
         this.aet = aet;
         
-//        System.out.println("ESTOY EN EL CONSTRUCTOR");
     }
         
     /**
@@ -132,16 +133,32 @@ public class Trabajo {
      * @param rol rol que cumple el profesor
      * @return Profesor  - profesor con el rol especificado
      */
-//    public Profesor verTutorOCotutor(Rol rol) {
-//    }
+    public Profesor verTutorOCotutor(Rol rol) {
+        Profesor unProfesor = null;
+        if( rol.equals(Rol.TUTOR) || rol.equals(Rol.COTUTOR)){
+            for(RolEnTrabajo ret : this.ret){
+                if(ret.verRol().equals(rol) && ret.verFechaHasta() == null){
+                    unProfesor = ret.verProfesor();
+                }
+            }
+            return unProfesor;
+        }
+        return unProfesor;
+    }
 
     /**
      * Devuelve el jurado del trabajo, ordenado por apellido y nombre
      * El jurado es el último, o sea quienes tienen fecha de finalización nula
      * @return List<Profesor>  - lista con el jurado del trabajo
      */
-//    public List<Profesor> verJurado() {
-//    }
+    public List<Profesor> verJurado() {
+        List<Profesor> jurado = new ArrayList<>();
+        for(RolEnTrabajo ret : this.ret){
+            
+        }
+        Collections.sort(jurado);
+        return jurado;
+    }
     
     /**
      * Devuelve la lista de profesores con sus roles en el trabajo
@@ -152,6 +169,7 @@ public class Trabajo {
      * @return List<RolEnTrabajo>  - lista de profesores con sus roles en el trabajo
      */
     public List<RolEnTrabajo> verProfesoresConRoles() {
+        Collections.sort(ret);
         return this.ret;
     }
     
@@ -162,6 +180,7 @@ public class Trabajo {
      * @return List<AlumnoEnTrabajo>  - lista de alumnos del trabajo (los que actualmente participan y los que no)
      */
     public List<AlumnoEnTrabajo> verAlumnos() {
+        Collections.sort(aet);
         return this.aet;
     }    
     
@@ -185,8 +204,14 @@ public class Trabajo {
      * @param rol rol de los profesores
      * @return int  - cantidad de profesores con el rol especificado en el trabajo
      */
-//    public int cantidadProfesoresConRol(Rol rol) {
-//    }
+    public int cantidadProfesoresConRol(Rol rol) {
+        int cantidad = 0;
+        for(RolEnTrabajo ret : this.ret){
+            if(ret.verRol().equals(rol))
+                cantidad++;
+        }
+        return cantidad;
+    }
     
     /**
      * Devuelve la cantidad de alumnos (actuales y no) en el trabajo
@@ -217,8 +242,13 @@ public class Trabajo {
      * @param profesor profesor a buscar
      * @return boolean  - true si el profesor participa en el trabajo, false en caso constrario
      */
-//    public boolean tieneEsteProfesor(Profesor profesor) {
-//    }
+    public boolean tieneEsteProfesor(Profesor profesor) {
+        for(RolEnTrabajo ret : this.ret){
+            if(ret.verProfesor().equals(profesor))
+                return true;
+        }
+        return false;
+    }
     
     /**
      * Agrega el profesor con su rol al trabajo
@@ -226,6 +256,8 @@ public class Trabajo {
      * @param rolEnTrabajo 
      */
     public void agregarRolEnTrabajo(RolEnTrabajo rolEnTrabajo) {
+        if(!this.ret.contains(rolEnTrabajo))
+            this.ret.add(rolEnTrabajo);
     }
             
     /**
@@ -346,8 +378,12 @@ public class Trabajo {
      * Informa si el trabajo está o no finalizado
      * @return boolean  - true si el trabajo está finalizado, false en caso contrario
      */
-//    public boolean estaFinalizado() {
-//    }
+    public boolean estaFinalizado() {
+        if(this.fechaFinalizacion == null)
+            return true;
+        else
+            return false;
+    }
 
     /**
      * Cancela el agregado/modificación del seminario
@@ -438,4 +474,36 @@ public class Trabajo {
 //        System.out.println("");
     }
 //</editor-fold>
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.titulo);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Trabajo other = (Trabajo) obj;
+        if (!Objects.equals(this.titulo, other.titulo)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+
+    @Override
+    public int compareTo(Trabajo o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

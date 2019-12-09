@@ -76,6 +76,10 @@ public class GestorTrabajos implements IGestorTrabajos {
     public String nuevoTrabajo(String titulo, int duracion, LocalDate fechaPresentacion, LocalDate fechaAprobacion, List<Area> areas, List<RolEnTrabajo> profesores, List<AlumnoEnTrabajo> aet) {
         //CREO UN TRABAJO CON LOS DATOS CORRECTOS PARA PODER TRABAJAR VENTANA SEMINARIOS
         //CORREGIR EL CODIGO DESPUES
+        if(titulo == null || titulo.trim().isEmpty() || duracion <=0 ){
+            return ERROR_TITULO_DURACION;
+        }
+        
         Trabajo unTrabajo= new Trabajo(titulo, duracion, areas, fechaPresentacion, fechaAprobacion, profesores, aet);
         trabajos.add(unTrabajo);
         

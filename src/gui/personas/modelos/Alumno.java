@@ -39,8 +39,38 @@ public class Alumno extends Persona {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.cx);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!super.equals(obj)){
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Alumno other = (Alumno) obj;
+            if (!Objects.equals(this.cx, other.cx)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    
+    
+    @Override
     public String toString() {
         return super.toString() + "Alumno{" + "cx=" + cx + '}';
     }
+
     
 }

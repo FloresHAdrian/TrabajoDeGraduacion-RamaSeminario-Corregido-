@@ -5,7 +5,7 @@
  */
 package gui.personas.modelos;
 
-public abstract class Persona {
+public abstract class Persona implements Comparable<Persona>{
     private String apellidos;
     private String nombres;
     private int dni;
@@ -70,4 +70,12 @@ public abstract class Persona {
     public String toString() {
         return this.apellidos + ", " + this.nombres;
     }    
+
+    @Override
+    public int compareTo(Persona o) {
+        if(this.apellidos.compareTo(o.apellidos)==0)
+            return this.nombres.compareTo(o.nombres);
+        else
+            return this.apellidos.compareTo(o.apellidos);
+    }
 }

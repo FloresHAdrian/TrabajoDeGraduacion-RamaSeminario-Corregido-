@@ -5,6 +5,7 @@
  */
 package gui.seminarios.controladores;
 
+import gui.auxiliares.texto.TablaTextRender;
 import gui.interfaces.IControladorAMSeminario;
 import gui.interfaces.IControladorSeminarios;
 import gui.interfaces.IGestorSeminarios;
@@ -22,7 +23,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -140,22 +144,20 @@ public class ControladorSeminarios implements IControladorSeminarios {
         
         
         //Le doy el ancho a las colummnas.
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_FECHA).setPreferredWidth(25);
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_NOTA).setPreferredWidth(25);
-        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_OBSERVACIONES).setPreferredWidth(195);
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_FECHA).setPreferredWidth(20);
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_NOTA).setPreferredWidth(20);
+        tablaSeminarios.getColumn(ModeloTablaSeminarios.COLUMNA_OBSERVACIONES).setPreferredWidth(300);
         
         
         //Renderizo el tamaño de las filas segun el texto de las observaciones.
-        for(int row = 0; row < tablaSeminarios.getRowCount(); row++){
-            int rowHeight = tablaSeminarios.getRowHeight();
-            
-            Component comp = tablaSeminarios.prepareRenderer(tablaSeminarios.getCellRenderer(row, 2), row, 2);
-            rowHeight = Math.max(rowHeight, comp.getPreferredSize().height);
-            
-            tablaSeminarios.setRowHeight(row, rowHeight);
-        }
-
-
+        TableCellRenderer tcr = new TablaTextRender();
+        tablaSeminarios.getColumnModel().getColumn(2).setCellRenderer(tcr);
+        
+        
+        DefaultTableCellRenderer dtc = new DefaultTableCellRenderer();
+        dtc.setHorizontalAlignment(JLabel.CENTER);
+        tablaSeminarios.getColumnModel().getColumn(0).setCellRenderer(dtc);
+        tablaSeminarios.getColumnModel().getColumn(1).setCellRenderer(dtc);
     }
 
     /**
